@@ -35,6 +35,8 @@ export type Ladder = {
   name: string;
   description?: string;
   category: "witness" | "relational" | "self-occupation" | "other";
+  /** Optional floor this ladder is the move toward. Unattached = general practice. */
+  floor?: number;
   createdAt: string;
 };
 
@@ -42,6 +44,8 @@ export type Chute = {
   id: string;
   name: string;
   description?: string;
+  /** Optional floor this chute drops you from. Unattached = general pattern. */
+  floor?: number;
   createdAt: string;
 };
 

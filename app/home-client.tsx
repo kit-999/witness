@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { load, save, addEntry } from "@/lib/storage";
-import { WitnessData, Entry } from "@/lib/types";
+import { load, addEntry } from "@/lib/storage";
+import { WitnessData } from "@/lib/types";
 import CheckinModal from "@/components/checkin-modal";
-import BuildingModal from "@/components/building-modal";
 import LaddersModal from "@/components/ladders-modal";
 import ChutesModal from "@/components/chutes-modal";
 import LogRow from "@/components/log-row";
 import PatternsView from "@/components/patterns-view";
 import SettingsModal from "@/components/settings-modal";
+import Building from "@/components/building";
 
 export default function HomeClient() {
   const [data, setData] = useState<WitnessData | null>(null);
   const [activeModal, setActiveModal] = useState<
-    null | "checkin" | "building" | "ladders" | "chutes" | "settings"
+    null | "checkin" | "ladders" | "chutes" | "settings"
   >(null);
   const [warmId, setWarmId] = useState<string | null>(null);
 
@@ -37,21 +37,6 @@ export default function HomeClient() {
 
   return (
     <>
-      {/* building badge — top */}
-      <button
-        className="building-badge"
-        onClick={() => setActiveModal("building")}
-        aria-label="open building view"
-      >
-        <span>
-          <span className="floor-num">floor {data.state.currentFloor}</span>
-          <span className="lowercase soft" style={{ marginLeft: 10, fontStyle: "italic" }}>
-            witness
-          </span>
-        </span>
-        <span className="target">target {data.state.targetLow}–{data.state.targetHigh}</span>
-      </button>
-
       {/* primary cta */}
       <button className="cta-primary" onClick={() => setActiveModal("checkin")}>
         check in
@@ -62,12 +47,17 @@ export default function HomeClient() {
         just here
       </button>
 
+      {/* the building — main canvas */}
+      <Building data={data} />
+
       {/* field log */}
       <section className="log-section">
         <div className="log-header">
           <span className="log-title">field log</span>
           <span className="faint" style={{ fontFamily: "var(--sans)", fontSize: 12 }}>
-            {data.entries.length === 0 ? "no entries yet" : `${data.entries.length} ${data.entries.length === 1 ? "entry" : "entries"}`}
+            {data.entries.length === 0
+              ? "no entries yet"
+              : `${data.entries.length} ${data.entries.length === 1 ? "entry" : "entries"}`}
           </span>
         </div>
 
@@ -85,29 +75,29 @@ export default function HomeClient() {
 
       <PatternsView entries={data.entries} />
 
-      {/* scaffolding — collapsed by default */}
+      {/* unattached lists for general practice/pattern items */}
 
       <details className="collapsible">
-        <summary>ladders — practices</summary>
+        <summary>ladders — unattached practices</summary>
         <div className="body">
           <p className="soft" style={{ fontSize: 14, fontStyle: "italic", marginTop: 0 }}>
-            things to try. add or edit. attempts go into the field log.
+            general practices that aren&apos;t tied to a specific floor. ladders attached
+            to floors live in those floor cards above.
           </p>
           <button className="btn-soft" onClick={() => setActiveModal("ladders")}>
-            open ladders
+            open
           </button>
         </div>
       </details>
 
       <details className="collapsible">
-        <summary>chutes — patterns to notice</summary>
+        <summary>chutes — unattached patterns</summary>
         <div className="body">
           <p className="soft" style={{ fontSize: 14, fontStyle: "italic", marginTop: 0 }}>
-            patterns that drop you. notice without scoring. notices go into the field log.
-            no counts visible anywhere.
+            general patterns to notice. floor-specific chutes live in those floor cards.
           </p>
           <button className="btn-soft" onClick={() => setActiveModal("chutes")}>
-            open chutes
+            open
           </button>
         </div>
       </details>
@@ -132,14 +122,11 @@ export default function HomeClient() {
           }}
         />
       )}
-      {activeModal === "building" && (
-        <BuildingModal data={data} onClose={() => setActiveModal(null)} />
-      )}
       {activeModal === "ladders" && (
-        <LaddersModal data={data} onClose={() => setActiveModal(null)} />
+        <LaddersModal data={data} onClose={() => setActiveModal(null)} unattachedOnly />
       )}
       {activeModal === "chutes" && (
-        <ChutesModal data={data} onClose={() => setActiveModal(null)} />
+        <ChutesModal data={data} onClose={() => setActiveModal(null)} unattachedOnly />
       )}
       {activeModal === "settings" && (
         <SettingsModal onClose={() => setActiveModal(null)} />

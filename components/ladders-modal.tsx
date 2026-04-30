@@ -7,10 +7,15 @@ import { addLadder, updateLadder, deleteLadder, addEntry } from "@/lib/storage";
 export default function LaddersModal({
   data,
   onClose,
+  unattachedOnly,
 }: {
   data: WitnessData;
   onClose: () => void;
+  unattachedOnly?: boolean;
 }) {
+  const visibleLadders = unattachedOnly
+    ? data.ladders.filter((l) => l.floor === undefined)
+    : data.ladders;
   const [editing, setEditing] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
@@ -53,7 +58,14 @@ export default function LaddersModal({
         )}
 
         <div className="ladder-list">
-          {data.ladders.map((l) => (
+          {visibleLadders.length === 0 && (
+            <div className="empty-state">
+              {unattachedOnly
+                ? "no unattached ladders. all your ladders are tied to specific floors above."
+                : "no ladders yet."}
+            </div>
+          )}
+          {visibleLadders.map((l) => (
             <LadderCard
               key={l.id}
               ladder={l}

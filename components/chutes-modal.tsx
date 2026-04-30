@@ -7,10 +7,15 @@ import { addChute, updateChute, deleteChute, addEntry } from "@/lib/storage";
 export default function ChutesModal({
   data,
   onClose,
+  unattachedOnly,
 }: {
   data: WitnessData;
   onClose: () => void;
+  unattachedOnly?: boolean;
 }) {
+  const visibleChutes = unattachedOnly
+    ? data.chutes.filter((c) => c.floor === undefined)
+    : data.chutes;
   const [editing, setEditing] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
@@ -53,7 +58,14 @@ export default function ChutesModal({
         )}
 
         <div className="chute-list">
-          {data.chutes.map((c) => (
+          {visibleChutes.length === 0 && (
+            <div className="empty-state">
+              {unattachedOnly
+                ? "no unattached chutes. all your chutes are tied to specific floors above."
+                : "no chutes yet."}
+            </div>
+          )}
+          {visibleChutes.map((c) => (
             <ChuteCard
               key={c.id}
               chute={c}

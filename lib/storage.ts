@@ -59,13 +59,14 @@ export function deleteEntry(id: string) {
   write(d);
 }
 
-export function addLadder(name: string, description: string, category: Ladder["category"]) {
+export function addLadder(name: string, description: string, category: Ladder["category"], floor?: number) {
   const d = readRaw();
   const l: Ladder = {
     id: crypto.randomUUID(),
     name,
     description,
     category,
+    floor,
     createdAt: new Date().toISOString(),
   };
   d.ladders.push(l);
@@ -88,12 +89,13 @@ export function deleteLadder(id: string) {
   write(d);
 }
 
-export function addChute(name: string, description: string) {
+export function addChute(name: string, description: string, floor?: number) {
   const d = readRaw();
   const c: Chute = {
     id: crypto.randomUUID(),
     name,
     description,
+    floor,
     createdAt: new Date().toISOString(),
   };
   d.chutes.push(c);

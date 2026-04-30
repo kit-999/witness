@@ -426,6 +426,181 @@ a:hover { text-decoration: underline; }
 .chute-card .name, .ladder-card .name { font-family: var(--serif); font-style: italic; font-size: 16px; }
 .chute-card .desc, .ladder-card .desc { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
 
+/* building — main canvas */
+
+.building-section {
+  margin-top: 22px;
+}
+
+.building-head {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.building-head .head-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.building-head .head-target {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-left: 12px;
+}
+
+.building-head .floor-num {
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.building-head .head-current-edit input[type=number] {
+  margin-left: 8px;
+  width: 56px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+}
+
+.building-head input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+}
+
+/* floor card */
+
+.floor-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  padding: 14px;
+  margin-bottom: 12px;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.floor-card.in-target {
+  border-top-style: dashed;
+  border-top-color: var(--blue);
+}
+.floor-card.current {
+  background: var(--coral-pale);
+  border-color: var(--coral-soft);
+}
+
+.floor-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.floor-num-small {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-right: 10px;
+  letter-spacing: 0.02em;
+}
+
+.floor-name-inline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+}
+
+.here-tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--coral);
+  font-weight: 500;
+}
+.target-tag {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--blue);
+  font-style: italic;
+}
+
+.floor-section {
+  margin-top: 12px;
+}
+.floor-section-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+  text-transform: lowercase;
+}
+
+.what-would-be-true {
+  font-size: 14px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.floor-empty {
+  font-size: 13px;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.b-notes-line {
+  font-size: 13px;
+  color: var(--blue);
+  font-style: italic;
+}
+
+/* attachment cards inside a floor */
+
+.floor-attachment {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 6px;
+}
+.floor-attachment.ladder { border-left: 3px solid var(--coral-soft); }
+.floor-attachment.chute { border-left: 3px solid var(--blue-soft); }
+.floor-attachment.edit { background: var(--bg); }
+
+.floor-attachment .att-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+}
+.floor-attachment .att-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+.floor-attachment .att-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
 /* footer */
 
 footer {
