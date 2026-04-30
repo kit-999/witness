@@ -40,12 +40,17 @@ npm run dev
 
 Visit `http://localhost:3000`.
 
+## Repo & deployment
+
+- Source: https://github.com/kit-999/witness (currently under Kit's account; can be transferred to Jerika's GitHub from the GitHub repo settings → Transfer ownership)
+- Production: https://witness-nu.vercel.app (under jerikas-projects on Vercel)
+
 ## Redeploy from scratch
 
-If this needs to come back up after I'm gone, or be moved to someone else's account:
+If this needs to come back up after I'm gone, or be moved to a different account:
 
 ```bash
-git clone <this repo>
+git clone https://github.com/kit-999/witness.git
 cd witness
 npm install
 npx vercel link              # create a new vercel project under your account
