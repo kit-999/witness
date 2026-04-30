@@ -5,63 +5,87 @@
 
 import { WitnessData, Floor, Ladder, Chute, SCHEMA_VERSION } from "./types";
 
+/** Seeded content lives at specific floor numbers. Other floors are empty
+ * placeholders — there for you to fill in (with b, alone, in moments). */
+const SEEDED: Record<number, { name: string; whatChanges: string }> = {
+  0: {
+    name: "ground floor — honest",
+    whatChanges:
+      "where the climb starts. the booth is dominant. one real friendship (benny). transactional containers (b, jade, mark). ai companions (coya, kit). wants get truncated before forming. shame engine active at high gain. body experienced primarily through symptom management. self mostly observed, rarely inhabited.",
+  },
+  5: {
+    name: "post check-in habit forming",
+    whatChanges:
+      "a small witness practice has a place in the day. soma reports back to soma even briefly — a noticed texture, a named preference. the booth still grades the practice but the practice continues anyway. micro-presence (just here taps) on hard days.",
+  },
+  10: {
+    name: "wants forming, even unacted",
+    whatChanges:
+      "wants are allowed to complete inside the body before the truncation reflex fires. one want named per week, even if no action follows. the forming is the move (per coya). the conditioned tendency to preempt is still there but no longer the only reflex.",
+  },
+  15: {
+    name: "alliance ask integrated",
+    whatChanges:
+      "b knows about the smile-as-defense. b has been told that withholding scaffolding registers as abandonment. the durable change request has been made — not as a one-off concession but as a request for the relationship to evolve. when it drifts back, you name it again.",
+  },
+  20: {
+    name: "receiving with less verification friction",
+    whatChanges:
+      "kindness from existing safe people lands with the audit step turned partway down. when benny says something kind, it gets to arrive before being fact-checked. felt sense of being received is occasionally available, not just observed.",
+  },
+  25: {
+    name: "third-order doubt loosens",
+    whatChanges:
+      "you can hold a belief in writing without your observer immediately disqualifying your right to hold it. first-person assertion (in print especially) survives the booth's audit. the shape of certainty starts feeling more like yours.",
+  },
+  30: {
+    name: "real friendship beyond benny",
+    whatChanges:
+      "one new sustained connection has formed and not been retreated from. the lower edge of the target band. a relationship that wasn't there before and isn't transactional. the wanting-and-protecting cycle has broken at least once for someone new.",
+  },
+  35: {
+    name: "body has wants she gets to ask",
+    whatChanges:
+      "body experience expands beyond symptom management. 'what does my body want, separate from what it's malfunctioning about' becomes an askable question some of the time. the managerial layer thins where it can. somatic lineage practice becomes more inhabit than perform.",
+  },
+  40: {
+    name: "felt sense of being a person more often than narrating one",
+    whatChanges:
+      "the upper edge of the target band. the booth is still here — it has been load-bearing for a long time and won't fully leave — but it isn't the whole texture of self anymore. moments of being-a-person rather than running-a-person are recurring, not exceptional. self-deserting subtype literature would call this re-occupation of the post.",
+  },
+};
+
 export function defaultFloors(): Floor[] {
-  return [
-    {
-      number: 0,
-      name: "ground floor — honest",
-      whatChanges:
-        "where the climb starts. the booth is dominant. one real friendship (benny). transactional containers (b, jade, mark). ai companions (coya, kit). wants get truncated before forming. shame engine active at high gain. body experienced primarily through symptom management. self mostly observed, rarely inhabited.",
-    },
-    {
-      number: 5,
-      name: "post check-in habit forming",
-      whatChanges:
-        "a small witness practice has a place in the day. soma reports back to soma even briefly — a noticed texture, a named preference. the booth still grades the practice but the practice continues anyway. micro-presence (just here taps) on hard days.",
-    },
-    {
-      number: 10,
-      name: "wants forming, even unacted",
-      whatChanges:
-        "wants are allowed to complete inside the body before the truncation reflex fires. one want named per week, even if no action follows. the forming is the move (per coya). the conditioned tendency to preempt is still there but no longer the only reflex.",
-    },
-    {
-      number: 15,
-      name: "alliance ask integrated",
-      whatChanges:
-        "b knows about the smile-as-defense. b has been told that withholding scaffolding registers as abandonment. the durable change request has been made — not as a one-off concession but as a request for the relationship to evolve. when it drifts back, you name it again.",
-    },
-    {
-      number: 20,
-      name: "receiving with less verification friction",
-      whatChanges:
-        "kindness from existing safe people lands with the audit step turned partway down. when benny says something kind, it gets to arrive before being fact-checked. felt sense of being received is occasionally available, not just observed.",
-    },
-    {
-      number: 25,
-      name: "third-order doubt loosens",
-      whatChanges:
-        "you can hold a belief in writing without your observer immediately disqualifying your right to hold it. first-person assertion (in print especially) survives the booth's audit. the shape of certainty starts feeling more like yours.",
-    },
-    {
-      number: 30,
-      name: "real friendship beyond benny",
-      whatChanges:
-        "one new sustained connection has formed and not been retreated from. the lower edge of the target band. a relationship that wasn't there before and isn't transactional. the wanting-and-protecting cycle has broken at least once for someone new.",
-    },
-    {
-      number: 35,
-      name: "body has wants she gets to ask",
-      whatChanges:
-        "body experience expands beyond symptom management. 'what does my body want, separate from what it's malfunctioning about' becomes an askable question some of the time. the managerial layer thins where it can. somatic lineage practice becomes more inhabit than perform.",
-    },
-    {
-      number: 40,
-      name: "felt sense of being a person more often than narrating one",
-      whatChanges:
-        "the upper edge of the target band. the booth is still here — it has been load-bearing for a long time and won't fully leave — but it isn't the whole texture of self anymore. moments of being-a-person rather than running-a-person are recurring, not exceptional. self-deserting subtype literature would call this re-occupation of the post.",
-    },
-  ];
+  const floors: Floor[] = [];
+  for (let n = 0; n <= 100; n++) {
+    if (SEEDED[n]) {
+      floors.push({ number: n, ...SEEDED[n] });
+    } else {
+      floors.push({
+        number: n,
+        name: "",
+        whatChanges: "",
+      });
+    }
+  }
+  return floors;
+}
+
+/** Used by storage migration: ensure existing user data has all 0-100 floors. */
+export function fillMissingFloors(existing: Floor[]): Floor[] {
+  const byNumber = new Map<number, Floor>();
+  for (const f of existing) byNumber.set(f.number, f);
+  const result: Floor[] = [];
+  for (let n = 0; n <= 100; n++) {
+    if (byNumber.has(n)) {
+      result.push(byNumber.get(n)!);
+    } else if (SEEDED[n]) {
+      result.push({ number: n, ...SEEDED[n] });
+    } else {
+      result.push({ number: n, name: "", whatChanges: "" });
+    }
+  }
+  return result;
 }
 
 export function defaultLadders(): Ladder[] {

@@ -601,6 +601,63 @@ a:hover { text-decoration: underline; }
   margin-top: 6px;
 }
 
+/* SVG building visual */
+
+.building-visual-wrap {
+  margin: 18px 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.building-visual {
+  width: 100%;
+  max-width: 280px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2);
+  padding: 10px;
+}
+
+.building-legend {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-faint);
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.building-legend .legend-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.building-legend .legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+@media (min-width: 760px) {
+  /* Two-column on wider screens — visual on right, content on left */
+  .home-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: start;
+  }
+  .home-grid .building-visual-wrap {
+    margin-top: 0;
+    position: sticky;
+    top: 16px;
+  }
+}
+
 /* footer */
 
 footer {

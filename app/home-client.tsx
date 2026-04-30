@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { load, addEntry } from "@/lib/storage";
 import { WitnessData } from "@/lib/types";
 import CheckinModal from "@/components/checkin-modal";
@@ -10,6 +10,7 @@ import LogRow from "@/components/log-row";
 import PatternsView from "@/components/patterns-view";
 import SettingsModal from "@/components/settings-modal";
 import Building from "@/components/building";
+import BuildingVisual from "@/components/building-visual";
 
 export default function HomeClient() {
   const [data, setData] = useState<WitnessData | null>(null);
@@ -17,9 +18,13 @@ export default function HomeClient() {
     null | "checkin" | "ladders" | "chutes" | "settings"
   >(null);
   const [warmId, setWarmId] = useState<string | null>(null);
+  const [windowLow, setWindowLow] = useState<number>(0);
+  const buildingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setData(load());
+    const d = load();
+    setData(d);
+    setWindowLow(d.state.currentFloor);
     const onChange = () => setData(load());
     window.addEventListener("witness:change", onChange);
     return () => window.removeEventListener("witness:change", onChange);
@@ -35,6 +40,20 @@ export default function HomeClient() {
     setTimeout(() => setWarmId(null), 800);
   };
 
+  const focusFloor = (n: number) => {
+    // Slide the building window so this floor is in view (with some context above)
+    setWindowLow(Math.max(0, Math.min(100 - 10, n - 2)));
+    // Then scroll the page after the DOM updates
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`floor-card-${n}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        buildingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  };
+
   return (
     <>
       {/* primary cta */}
@@ -47,8 +66,33 @@ export default function HomeClient() {
         just here
       </button>
 
-      {/* the building — main canvas */}
-      <Building data={data} />
+      {/* Two-column on desktop, stacked on mobile */}
+      <div className="home-grid">
+        <div ref={buildingRef}>
+          <Building data={data} windowLow={windowLow} setWindowLow={setWindowLow} />
+        </div>
+
+        <aside className="building-visual-wrap">
+          <BuildingVisual data={data} onFloorClick={focusFloor} />
+          <div className="building-legend">
+            <span className="legend-key">
+              <span className="legend-swatch" style={{ background: "var(--coral)" }} />
+              lit floor
+            </span>
+            <span className="legend-key">
+              <span className="legend-swatch" style={{ background: "var(--coral-soft)" }} />
+              you
+            </span>
+            <span className="legend-key">
+              <span className="legend-swatch" style={{ background: "var(--blue-pale)" }} />
+              target
+            </span>
+            <span className="legend-key">
+              ↑ ladder · ↓ chute
+            </span>
+          </div>
+        </aside>
+      </div>
 
       {/* field log */}
       <section className="log-section">

@@ -4,7 +4,7 @@
 "use client";
 
 import { WitnessData, Entry, Ladder, Chute, Floor, AppState, SCHEMA_VERSION } from "./types";
-import { defaultData } from "./seed";
+import { defaultData, fillMissingFloors } from "./seed";
 
 const KEY = "witness:v1";
 
@@ -14,9 +14,16 @@ function readRaw(): WitnessData {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return defaultData();
     const parsed = JSON.parse(raw) as WitnessData;
+    // Always ensure all 0-100 floors exist (idempotent migration).
+    if (!parsed.floors || parsed.floors.length < 101) {
+      parsed.floors = fillMissingFloors(parsed.floors || []);
+    }
     if (parsed.state?.schemaVersion !== SCHEMA_VERSION) {
-      // Future: run migrations. For v1: trust the version.
-      return { ...defaultData(), ...parsed, state: { ...defaultData().state, ...parsed.state, schemaVersion: SCHEMA_VERSION } };
+      return {
+        ...defaultData(),
+        ...parsed,
+        state: { ...defaultData().state, ...parsed.state, schemaVersion: SCHEMA_VERSION },
+      };
     }
     return parsed;
   } catch {

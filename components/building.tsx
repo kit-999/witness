@@ -20,11 +20,16 @@ import {
  * Each floor card: name (italic), "what would be true if" (editable inline),
  * attached ladders + chutes, b-notes, add buttons inline.
  */
-export default function Building({ data }: { data: WitnessData }) {
+export default function Building({
+  data,
+  windowLow,
+  setWindowLow,
+}: {
+  data: WitnessData;
+  windowLow: number;
+  setWindowLow: (n: number) => void;
+}) {
   const { state, floors } = data;
-  // The window is anchored at the LOWER bound. Default to current floor.
-  // Show currentFloor through currentFloor + 10 (inclusive => 11 floors).
-  const [windowLow, setWindowLow] = useState<number>(state.currentFloor);
   const windowSize = 11;
   const windowHigh = Math.min(100, windowLow + windowSize - 1);
 
@@ -95,15 +100,16 @@ export default function Building({ data }: { data: WitnessData }) {
           <div className="empty-state">no floors in this range.</div>
         )}
         {visibleFloors.map((f) => (
-          <FloorCard
-            key={f.number}
-            floor={f}
-            current={f.number === state.currentFloor}
-            inTarget={f.number >= state.targetLow && f.number <= state.targetHigh}
-            ladders={ladderByFloor(f.number)}
-            chutes={chuteByFloor(f.number)}
-            onSetCurrent={() => updateState({ currentFloor: f.number })}
-          />
+          <div key={f.number} id={`floor-card-${f.number}`}>
+            <FloorCard
+              floor={f}
+              current={f.number === state.currentFloor}
+              inTarget={f.number >= state.targetLow && f.number <= state.targetHigh}
+              ladders={ladderByFloor(f.number)}
+              chutes={chuteByFloor(f.number)}
+              onSetCurrent={() => updateState({ currentFloor: f.number })}
+            />
+          </div>
         ))}
       </div>
     </section>
